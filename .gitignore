@@ -1,0 +1,17 @@
+# Virtual environments
+venv/
+.env
+
+# Cache files
+__pycache__/
+
+# Temporary files
+*.log
+*.tmp
+*.csv
+.vscode/
+*.pt
+runs/
+*.ipynb
+tmp/
+seg-output/
