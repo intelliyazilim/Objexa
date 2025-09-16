@@ -69,7 +69,7 @@ class ImageSegmentation:
         try:
             class_dict_df = pd.read_csv("Detection_Classes.csv", encoding="utf-8")
         except FileNotFoundError as exc:
-            raise FileNotFoundError("Detection_Classes.csv not found") from exc
+            print("FileNotFoundError: 'Detection_Classes.csv' not found") 
 
         filenames = sorted(
             f for f in os.listdir(self.input_folder)
@@ -110,8 +110,7 @@ class ImageSegmentation:
                     for i, (mask, cls, prob, bbox) in enumerate(
                         zip(masks, classes, probs, bboxes)
                     ):
-                        rec_data = find_rec_id(class_dict_df, res.names[cls])
-                        class_recid, class_tr, class_ing = rec_data[:3]
+                        class_tr = res.names[classes[i]]
 
                         out_img, b64_img, arr_img = utils.crop_and_annotate(
                             pil_img=pil_img,
