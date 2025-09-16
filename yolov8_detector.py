@@ -291,14 +291,18 @@ class YoloV8Detector:
                         bounding_boxes = results[0].boxes.xyxy[j].tolist()
                         bounding_boxes_normalize = results[0].boxes.xywhn[j].tolist()
                         bounding_boxes_str = ','.join(map(str, bounding_boxes_normalize))
-                        
-                        result_class = find_rec_id(class_dict_df, class_name_yolo)
 
-                        class_recid = result_class[0]
-                        class_tr = result_class[1]
-                        class_ing = result_class[2]
-                        class_min_height = result_class[3]
-                        class_max_height = result_class[4]
+                        if self.datatype == "Others":
+                            pass
+                        else:
+
+                            result_class = find_rec_id(class_dict_df, class_name_yolo)
+
+                            class_recid = result_class[0]
+                            class_tr = result_class[1]
+                            class_ing = result_class[2]
+                            class_min_height = result_class[3]
+                            class_max_height = result_class[4]
                         
                         source=' '
     
@@ -309,15 +313,18 @@ class YoloV8Detector:
                                     fp_string = "_FP_"
                                 else:
                                     pass
+                        elif data_type == 'Others':
+                            class_tr = ""
+                            class_ing = ""
+                            class_recid = ""
                         else:
                             Location, is_fp = self.main_global_coordinate_calculation(xml_data, depth_main_path, source_EPSG, data_type, image_id, bounding_boxes, class_min_height, class_max_height)
 
                         image = results[0].orig_img
+                        
                         croped_data,croped_file_name,class_recid =self.crop_images_with_bbox(self.output_job_directory,image_file, image, bounding_boxes, class_tr, class_ing, class_recid, fp_string, img_conf,class_dict_df)
                         
-                        AssetSubType = class_recid
 
-                        Description = DescripitionBuilder.json_description_builder(image_id, xml_data, AssetSubType, data_type)
                         print(croped_file_name)
                         
                     except Exception as e:
@@ -358,8 +365,13 @@ class YoloV8Detector:
 
         City=self.city
 
-        class_dict_filepath = os.path.join(os.path.dirname(__file__),"Detection_Classes.csv")
-        class_dict_df = pd.read_csv(class_dict_filepath, encoding='utf-8')
+        if self.datatype == "Others":
+            class_dict_df = None
+
+        else:
+            class_dict_filepath = os.path.join(os.path.dirname(__file__),"Detection_Classes.csv")
+            class_dict_df = pd.read_csv(class_dict_filepath, encoding='utf-8')
+
 
         for index, image_file in enumerate(jpg_list[start_from:], start=start_from + 1):
             file_name = os.path.split(image_file)[-1]
